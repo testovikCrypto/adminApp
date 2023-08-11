@@ -1,0 +1,11 @@
+<nav class="nav nav-pills flex-column flex-sm-row" style="margin-top: 20px;">
+  <a class="flex-sm-fill text-sm-center nav-link tabItem"
+     [ngClass]="getsActiveTab() === 'users' ? 'active' : ''"
+     (click)="onChangeCurrentPage('users')">Пользователи</a>
+  <a class="flex-sm-fill text-sm-center nav-link tabItem"
+     [ngClass]="getsActiveTab() === 'change-price' ? 'active' : ''"
+     (click)="onChangeCurrentPage('change-price')">Изменение цены</a>
+  <a class="flex-sm-fill text-sm-center nav-link tabItem"
+     [ngClass]="getsActiveTab() === 'wallets-new' ? 'active' : ''"
+     (click)="onChangeCurrentPage('wallets-new')">Актуальные кошельки</a>
+</nav>

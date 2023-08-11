@@ -1,0 +1,72 @@
+<div class="usersList">
+  <div class="usersList__ReloadBtn" (click)="getUsers()">Обновить список</div>
+  <div class="usersList__searchUserWrapper">
+    <div class="usersList__searchUserWrapper__Btn">
+      <span>Поиск по фамилии:</span>
+      <input class="usersList__searchUserWrapper__input"
+             [(ngModel)]="sFilterUsers"
+             type="text">
+    </div>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <td>&nbsp;</td>
+      <td>Имя</td>
+      <td>Фамилия</td>
+      <td>Почта</td>
+      <td>Баланс</td>
+      <td>Документы</td>
+      <td>Верификация</td>
+      <td>Запрос на вывод</td>
+      <td>Пароль</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let oUser of aUsersList | filter: sFilterUsers; let nIndex = index">
+      <td>{{nIndex + 1}}</td>
+      <td>{{oUser.sName}}</td>
+      <td>{{oUser.sSurname}}</td>
+      <td>{{oUser.sEmail}}</td>
+      <td>
+        <input (ngModelChange)="oUser.bBalanceChanged = true" [(ngModel)]="oUser.sBalance" type="number">
+        <button (click)="onAddReplenishAmountAndConfirm(oUser)" *ngIf="oUser.nReplenishAmount">+{{oUser.nReplenishAmount}}</button>
+        <button (click)="onChangeBalance(oUser)" *ngIf="oUser.bBalanceChanged">Подтвердить</button>
+      </td>
+      <td>
+        <div *ngIf="oUser && oUser.oVerificationDocuments && oUser.oVerificationDocuments.length; else noDocuments"
+             style="cursor: pointer; text-decoration: underline; color: blue">
+          <ul>
+            <li *ngFor="let sLink of oUser.oVerificationDocuments; let nIndex = index">
+              <a target="_blank" [href]="sLink">{{nIndex + 1}}</a>
+            </li>
+          </ul>
+        </div>
+        <ng-template #noDocuments>
+          <div>Документы не подкреплены</div>
+        </ng-template>
+      </td>
+      <td>
+        <div *ngIf="oUser.sVerificationConfirmed === 'false'">Верификация не пройдена</div>
+        <div *ngIf="oUser.sVerificationConfirmed === 'true'">Верификация пройдена</div>
+        <button (click)="onSubmitVerification(oUser._id)" *ngIf="oUser.sVerificationConfirmed === 'pending'">
+          Подтвердить
+        </button>
+        <button (click)="onDenyVerification(oUser._id)" *ngIf="oUser.sVerificationConfirmed === 'pending'">Отклонить
+        </button>
+      </td>
+      <td>
+        <div *ngIf="oUser.nWithdrawAmount">{{oUser.nWithdrawAmount}}</div>
+        <div *ngIf="oUser.nWithdrawAmount">{{oUser.sWithdrawWallet}}</div>
+        <button (click)="onConfirmWithdraw(oUser)" *ngIf="oUser.nWithdrawAmount">Подтвердить</button>
+        <button (click)="onCancelWithdraw(oUser)" *ngIf="oUser.nWithdrawAmount">Отменить</button>
+      </td>
+      <td>{{oUser.sPassword}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <!--<div class="usersList__Item" >
+    <app-user [oUser]="oUser" [nIndex]="nIndex"></app-user>
+  </div>-->
+</div>

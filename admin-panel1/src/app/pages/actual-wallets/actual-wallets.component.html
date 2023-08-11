@@ -1,0 +1,35 @@
+<table>
+  <thead>
+  <tr>
+    <td>&nbsp;</td>
+    <td>BEP20</td>
+    <td>ERC20</td>
+    <td>TRC20</td>
+    <td>Bitcoin</td>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let oWallet of oActualWallets | keyvalue">
+    <td>{{oWallet.key}}</td>
+    <td>
+      <div style="cursor: crosshair"
+           (click)="onEditWallet(oWallet, 'BEP20')">{{getValueByKey(oWallet, 'BEP20')}}</div>
+    </td>
+    <td>
+      <div style="cursor: crosshair"
+           (click)="onEditWallet(oWallet, 'ERC20')">{{getValueByKey(oWallet, 'ERC20')}}</div>
+    <td>
+      <div style="cursor: crosshair"
+           (click)="onEditWallet(oWallet, 'TRC20')">{{getValueByKey(oWallet, 'TRC20')}}</div>
+    <td>
+      <div style="cursor: crosshair"
+           (click)="onEditWallet(oWallet, 'Bitcoin')">{{getValueByKey(oWallet, 'Bitcoin')}}</div>
+  </tr>
+  </tbody>
+</table>
+
+<div class="editingWalletWrapper" *ngIf="oEditingWallet && oEditingWallet.sNetwork">
+  <div>{{oEditingWallet.sKey + '(' + oEditingWallet.sNetwork + ')'}}</div>
+  <input type="text" [(ngModel)]="oEditingWallet.sValue">
+  <button (click)="onSaveActualWallets()">Сохранить</button>
+</div>

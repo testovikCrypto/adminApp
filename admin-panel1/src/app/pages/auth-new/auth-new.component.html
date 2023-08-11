@@ -1,0 +1,72 @@
+<!--<form class="form" novalidate="novalidate">
+  <div class="row" style="margin-bottom: 8px;">
+    <div class="col">
+      <div
+        class="form-group is&#45;&#45;required has&#45;&#45;content form-group&#45;&#45;default form-group&#45;&#45;light-theme"><label
+        for="knclyezcs">Email:</label>
+        <div class="form-control">
+          <input id="knclyezcs"
+                 [(ngModel)]="sEmail"
+                 style="border: none; padding: 8px; outline: none; width: 100%;"
+                 (ngModelChange)="onFieldChanged()"
+                 name="email"
+                 placeholder="Enter your email address"
+                 required="required" type="email"
+                 maxlength="999999999">
+        </div>
+        <div class="form-error"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row" style="margin-bottom: 8px;">
+    <div class="col">
+      <div
+        class="form-group is&#45;&#45;required has&#45;&#45;content form-group&#45;&#45;default form-group&#45;&#45;light-theme"><label
+        for="8ya0kt3cv">Password:</label>
+        <div class="form-control">
+          <input id="8ya0kt3cv"
+                 style="border: none; padding: 8px; outline: none; width: 100%;"
+                 name="password"
+                 (ngModelChange)="onFieldChanged()"
+                 [(ngModel)]="sPassword"
+                 placeholder="Enter your password"
+                 required="required" type="password"
+                 maxlength="999999999">
+
+        </div>
+        <div class="form-error" style="color: red;" *ngIf="bErrorLogin">
+          Данные введены не верно, проверьте логин/пароль
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="login-caption">
+    <div class="row">
+      <div class="col-xl-6">
+        <a (click)="onSubmit_LoginForm()" type="submit" class="btn btn-primary btn-lg">Login</a>
+      </div>
+    </div>
+  </div>
+</form>-->
+
+<div class="form">
+  <div class="form__input">
+    <input [(ngModel)]="sEmail"
+           style="border: none; padding: 8px; outline: none; width: 100%;"
+           name="email"
+           placeholder="Enter your email address"
+           required="required" type="email"
+           maxlength="999999999">
+  </div>
+  <div class="form__input">
+    <input style="border: none; padding: 8px; outline: none; width: 100%;"
+           name="password"
+           [(ngModel)]="sPassword"
+           placeholder="Enter your password"
+           required="required" type="password"
+           maxlength="999999999">
+  </div>
+  <div class="form__btn">
+    <a (click)="onSubmit_LoginForm()" class="btn btn-primary btn-lg">Login</a>
+  </div>
+</div>

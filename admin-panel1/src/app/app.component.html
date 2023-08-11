@@ -1,0 +1,11 @@
+<div class="auth" *ngIf="!isLoggedIn(); else loggedIn">
+  <app-auth-new></app-auth-new>
+</div>
+
+<ng-template #loggedIn>
+  <div class="wrapper">
+    <app-header-new></app-header-new>
+    <router-outlet></router-outlet>
+<!--    <div class="footer"></div>-->
+  </div>
+</ng-template>

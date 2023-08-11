@@ -1,0 +1,183 @@
+<div class="wrapper">
+  <div class="wrapper__header">
+    <div class="wrapper__header__btnBlock">
+      <div class="wrapper__header__btnBlock__input">
+        <div class="form-control">
+          <input style="border: none; padding: 2px; outline: none; width: 100%;"
+                 placeholder="Поиск (фамилия)"
+                 type="text"
+                 [(ngModel)]="sFilterUsers"
+                 maxlength="999999999">
+        </div>
+      </div>
+      <div class="wrapper__header__btnBlock__btn" (click)="getUsers()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#fff" class="bi bi-arrow-clockwise"
+             viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+          <path
+            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="wrapper__users">
+    <div class="wrapper__users__item"
+         (click)="onOpenUserModal(oUser)"
+         *ngFor="let oUser of aUsersList | filter: sFilterUsers">
+      <div class="wrapper__users__item__left">
+        <img class="wrapper__users__item__left__photo"
+             [src]="oUser.sProfilePhoto ? oUser.sProfilePhoto : 'assets/icon/humanPhotoMissing.jpeg'"
+             alt="">
+      </div>
+      <div class="wrapper__users__item__right">
+        <div class="wrapper__users__item__right__list">
+          <div class="wrapper__users__item__right__list__item">{{oUser.sName}} {{oUser.sSurname}}</div>
+          <div class="wrapper__users__item__right__list__item">{{oUser.sEmail}}</div>
+          <div class="wrapper__users__item__right__list__item">${{oUser.sBalance}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="bShowModal" class="blur" (click)="onCloseUserModal()"></div>
+<div *ngIf="bShowModal" class="modalWrapper">
+  <div class="modalWrapper__block">
+    <div class="modalWrapper__block__info">
+      <div class="modalWrapper__block__info__item">
+        <div class="modalWrapper__block__info__item__name">Email:</div>
+        <div class="modalWrapper__block__info__item__value">{{oUserForModal.sEmail}}</div>
+      </div>
+      <div class="modalWrapper__block__info__item">
+        <div class="modalWrapper__block__info__item__name">Телефон:</div>
+        <div class="modalWrapper__block__info__item__value">{{oUserForModal.sNumber}}</div>
+      </div>
+      <div class="modalWrapper__block__info__item">
+        <div class="modalWrapper__block__info__item__name">Пароль:</div>
+        <div class="modalWrapper__block__info__item__value">{{oUserForModal.sPassword}}</div>
+      </div>
+      <div class="modalWrapper__block__info__item">
+        <div class="modalWrapper__block__info__item__name">Баланс:</div>
+        <div class="modalWrapper__block__info__item__value">${{oUserForModal.sBalance}}</div>
+      </div>
+      <div class="modalWrapper__block__info__item">
+        <div class="modalWrapper__block__info__item__name">Дата и время регистрации:</div>
+        <div class="modalWrapper__block__info__item__value">{{ getFormattedDateTime(oUserForModal) }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="modalWrapper__block">
+    <div class="modalWrapper__block__regular">
+      <div class="modalWrapper__block__regular__name">История пополнений/вывода</div>
+      <div class="modalWrapper__block__regular__info">
+        <div class="modalWrapper__block__regular__info__item"
+             *ngFor="let oEvent of aoEventsForModal">
+          <div class="modalWrapper__block__regular__info__item__name">
+            {{getFormattedDateTime(oEvent)}}
+          </div>
+          <div class="modalWrapper__block__regular__info__item__name"
+               [ngStyle]="oEvent.sKey_Type === 'withdraw'
+                ? {color: 'red'} : oEvent.sKey_Type === 'replenish'
+                 ? {color: 'green'} : {}">
+            {{oEvent.nSum}}
+          </div>
+          <div class="modalWrapper__block__regular__info__item__value"
+               *ngIf="oEvent.sConfirmed === 'pending'">
+            <div class="modalWrapper__block__regular__info__item__value__btn"
+                 style="background-color: green; margin-right: 5px;"
+                 (click)="onProcessEvent(true, oEvent)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+              </svg>
+            </div>
+            <div class="modalWrapper__block__regular__info__item__value__btn"
+                 style="background-color: red"
+                 (click)="onProcessEvent(false, oEvent)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="modalWrapper__block__regular__info__item__value"
+               *ngIf="oEvent.sConfirmed === 'true'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+          </div>
+          <div class="modalWrapper__block__regular__info__item__value"
+               *ngIf="oEvent.sConfirmed === 'false'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+          </div>
+          <div *ngIf="oEvent.sWallet && oEvent.sKey_Type === 'withdraw'"
+               style="display: block; font-size: 10px; width: 100%;">
+            {{oEvent.sWallet}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modalWrapper__block">
+    <div class="modalWrapper__block__regular">
+      <div class="modalWrapper__block__regular__name">Закрытые сделки</div>
+      <div class="modalWrapper__block__regular__info">
+        <div class="modalWrapper__block__regular__info__item"
+             *ngFor="let oItem of aoClosedDealsForModal">
+          <div class="modalWrapper__block__regular__info__item__name">{{oItem.symbol}}</div>
+          <div class="modalWrapper__block__regular__info__item__value">{{oItem.sDealResultPNL}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modalWrapper__block">
+    <div class="modalWrapper__block__regular">
+      <div class="modalWrapper__block__regular__name">Открытые сделки</div>
+      <div class="modalWrapper__block__regular__info">
+        <div class="modalWrapper__block__regular__info__item"
+             *ngFor="let oItem of aoActiveDealsForModal">
+          <div class="modalWrapper__block__regular__info__item__name">{{oItem.symbol}}</div>
+          <div class="modalWrapper__block__regular__info__item__value">{{oItem.sDealResultPNL}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modalWrapper__block">
+    <div class="modalWrapper__block__regular">
+      <div class="modalWrapper__block__regular__name">Документы</div>
+      <div class="modalWrapper__block__regular__info">
+        <div class="modalWrapper__block__regular__info__item"
+             *ngFor="let sUrl of oUserForModal.oVerificationDocuments; let index = index">
+          <div class="modalWrapper__block__regular__info__item__name">{{index + 1}}.</div>
+          <a [href]="sUrl" target="_blank" style="word-break: break-all"
+             class="modalWrapper__block__regular__info__item__value">{{sUrl}}</a>
+        </div>
+        <div class="modalWrapper__block__regular__info__btnBlock">
+          <div class="modalWrapper__block__regular__info__btnBlock__confirmed"
+               *ngIf="oUserForModal.sVerificationConfirmed === 'true'">
+            Верификация пройдена
+          </div>
+          <div class="modalWrapper__block__regular__info__btnBlock__yes"
+               (click)="onSubmitVerification(oUserForModal._id)"
+               *ngIf="oUserForModal.sVerificationConfirmed === 'pending'
+                && oUserForModal.oVerificationDocuments.length">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+          </div>
+          <div class="modalWrapper__block__regular__info__btnBlock__no"
+               (click)="onDenyVerification(oUserForModal._id)"
+               *ngIf="oUserForModal.sVerificationConfirmed === 'pending'
+                && oUserForModal.oVerificationDocuments.length">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

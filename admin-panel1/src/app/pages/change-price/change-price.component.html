@@ -1,0 +1,57 @@
+<div class="changeList">
+  <div class="changeList__item">
+    <div class="changeList__item__pair">
+      <button type="button" style="margin-left: 10px;"
+              class="btn btn-light btn-sm btn-balance"
+              (click)="open(content)"
+              data-bs-toggle="modal"
+              data-bs-target="#PairModal">
+                    <span class="d-none d-md-inline">
+                      <span style="font-size: 18px; font-weight: 600;">{{sChosenSymbol}}</span>
+                      <i style="font-size: 18px;" class="bi bi-caret-down-fill"></i>
+                    </span>
+      </button>
+    </div>
+
+    <ng-template #content let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+        <button type="button" class="btn-close" (click)="modal.close('Close click')" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-control">
+          <input id="pairSearch"
+                 type="search"
+                 style="width: 100%; border: 0; outline: none;"
+                 [(ngModel)]="sSearchPair"
+                 placeholder="Search..."
+                 maxlength="999999999">
+        </div>
+      </div>
+      <div class="modal-footer"
+           style="max-height: 400px;
+                              overflow: scroll;
+                               padding-left: 0;
+                                padding-right: 0;">
+        <div class="pairWrapper">
+          <button type="button"
+                  *ngFor="let sSymbol of aoSymbol | filter: sSearchPair"
+                  (click)="onChoosePair(sSymbol, modal)"
+                  class="btn btn-light pairWrapper__item">
+            {{sSymbol}}
+          </button>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="changeList__item__value">
+      <input [(ngModel)]="nAmount" type="number">%
+      <button (click)="onChangePrice()">Подтвердить</button>
+      <span *ngIf="bInProcess_Change">Загрузка...</span>
+    </div>
+    <div class="changeList__item__value">
+      <button (click)="onResetPrice()">Сбросить все изменения цены</button>
+      <span *ngIf="bInProcess_Reset">Загрузка...</span>
+    </div>
+  </div>
+</div>
